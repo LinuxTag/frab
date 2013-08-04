@@ -27,24 +27,24 @@ namespace :vcc do
         end
         conference.save!
 
-	cfp = CallForPapers.new( 
-	  start_date: "2013-01-01", 
+        cfp = CallForPapers.new( 
+          start_date: "2013-01-01", 
           end_date: "2013-03-01", 
           hard_deadline: "2013-04-01", 
           welcome_text: "Call for Papers", 
           conference: conference, 
           info_url: "http://conference.linuxtag.org", 
           contact_email: "conference@linuxtag.org"
-	)
-	cfp.save!
+        )
+        cfp.save!
 
-        #puts 'import people'
-        #LinuxTag::VccPerson.find_each(:batch_size => 1000) do |p|
-        #  Person.create p.frab_person_attributes
-        #  print '.'
-        #end
+        puts 'import people'
+        LinuxTag::VccPerson.find_each(:batch_size => 1000) do |p|
+          p.frab_person(conference).save!
+          print '.'
+        end
+
         puts
-
         puts 'import rooms'
         LinuxTag::VccRoom.all.each do |r| 
           Room.create(r.frab_room_attributes(conference))
