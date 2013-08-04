@@ -9,17 +9,20 @@ class LinuxTag::VccPerson < VccDatabase
     association_foreign_key: "track", join_table: "sessionchair", foreign_key: "person"
 
   def frab_person(conference = nil)
+    my_user = User.new( 
+      email: email 
+    )
+    if conference
+      my_user.role = "coordinator"
+    end
     p = Person.new(
       first_name:            firstname, 
       last_name:             lastname, 
       public_name:           username,
-      user:                  User.new( email: email ),
+      user:                  my_user,
       email:                 email, 
       abstract:              bio, 
     )
-    if conference
-      p.user.role = "coordinator"
-    end
     p
     #@user.call_for_papers = @conference.call_for_papers
   end
