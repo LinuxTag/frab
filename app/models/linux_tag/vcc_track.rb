@@ -1,6 +1,5 @@
 class LinuxTag::VccTrack < VccDatabase
 
-  establish_connection("lt13_development")
   self.table_name = 'type_track'
 
   has_and_belongs_to_many :papers, class_name: "LinuxTag::VccPaper", 

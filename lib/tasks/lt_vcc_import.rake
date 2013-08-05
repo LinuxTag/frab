@@ -39,9 +39,14 @@ namespace :vcc do
         cfp.save!
 
         puts 'import people'
-        LinuxTag::VccPerson.find_each(:batch_size => 1000) do |p|
-          p.frab_person(conference).save!
-          print '.'
+        frab_people = Hash.new
+        LinuxTag::VccPerson.find_each(:batch_size => 1000) do |vcc_person|
+          frab_person = vcc_person.frab_person
+          # Todo: what to do with vcc people without email?
+          frab_person.email = 'help_i_have_no_mail@linuxtag.org' if vcc_person.email.blank?
+          frab_person.save!
+          frab_people[vcc_person] = frab_person
+          print frab_person.persisted? ? '.' : 'F'
         end
 
         puts
@@ -50,14 +55,33 @@ namespace :vcc do
           Room.create(r.frab_room_attributes(conference))
           print '.'
         end
-        puts
 
+        puts
         puts 'import papers'
         LinuxTag::VccPaper.find_each(:batch_size => 1000) do |e|
           e.frab_event(conference)
           print '.'
         end
+
         puts
+        puts 'add role coordinator to vcc-sessionchairs '
+        frab_people.each_key do |vcc_person| 
+          begin 
+            if vcc_person.sessions.any?
+              frab_person = Person.find_by_public_name(vcc_person.username)
+              frab_person.user.role = "coordinator"
+              frab_person.user.save!
+              print '+'
+            else
+              print '.'
+            end
+          rescue
+            print 'F'
+            #puts vcc_person.to_yaml
+            #puts frab_person.to_yaml
+            #puts frab_person.try(:user).to_yaml
+          end
+        end
       end
     end
   end

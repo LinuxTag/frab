@@ -8,7 +8,6 @@
 #
 class LinuxTag::VccEvent < VccDatabase
 
-  establish_connection("lt13_development")
   self.table_name = 'event'
 
   belongs_to :presentation, class_name: "LinuxTag::VccPaper",     foreign_key: "presentation"

@@ -1,6 +1,5 @@
 class LinuxTag::VccAuthorship < VccDatabase
 
-  establish_connection("lt13_development")
   self.table_name = 'authorship'
 
   belongs_to :author, class_name: "LinuxTag::VccPerson", foreign_key: "author"

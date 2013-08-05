@@ -1,6 +1,5 @@
 class LinuxTag::VccPaper < VccDatabase
 
-  establish_connection("lt13_development")
   self.table_name = 'paper'
 
   belongs_to :audience, class_name: "LinuxTag::VccPaperAudience", foreign_key: "audience"
